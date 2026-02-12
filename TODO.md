@@ -1,0 +1,5 @@
+- [x] Edit caption_generator/settings.py: Change load_dotenv() to load_dotenv('.evn')
+- [x] Edit caption_generator/settings.py: Change GROQ_API_KEY = os.getenv("gsk_...") to os.getenv("GROQ_API_KEY")
+- [x] Run Django server to test API key connection
+- [x] Fix malformed API key in .evn
+- [x] Verify API key is valid (currently showing 401 Invalid API Key error - requires valid key)

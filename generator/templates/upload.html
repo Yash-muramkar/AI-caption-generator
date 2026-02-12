@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Caption Generator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ===== SAME UI (NO CHANGE) ===== */
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',sans-serif; }
+        body { background:linear-gradient(135deg,#4d37d8,#2575fc); min-height:100vh; padding:20px; }
+        .container { max-width:1200px; margin:auto; }
+        header { text-align:center; color:#fff; margin-bottom:30px; }
+        h1 { font-size:2.5rem; }
+        .main { display:flex; gap:30px; flex-wrap:wrap; }
+        .card { background:#fff; padding:25px; border-radius:15px; flex:1; min-width:300px; }
+        .upload-area { border:3px dashed #4437a5; padding:30px; text-align:center; cursor:pointer; }
+        .upload-btn { margin-top:15px; padding:12px 25px; background:linear-gradient(to right,#6a11cb,#2575fc); color:#fff; border:none; border-radius:30px; cursor:pointer; }
+        .preview { height:250px; display:flex; align-items:center; justify-content:center; background:#f5f5f5; margin-bottom:15px; border-radius:10px; }
+        textarea { width:100%; height:140px; padding:12px; border-radius:10px; border:1px solid #ddd; }
+        .generate { margin-top:15px; width:100%; padding:14px; font-size:1.1rem; background:#2575fc; color:#fff; border:none; border-radius:10px; cursor:pointer; }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <header>
+        <h1>Code Sikha  AI Caption Generator</h1>
+        <p>Upload photo/video & get Instagram-ready captions</p>
+    </header>
+
+    <!-- ✅ DJANGO FORM START -->
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="main">
+
+            <!-- UPLOAD -->
+            <div class="card">
+                <h2>Upload Media</h2>
+
+                <div class="upload-area" onclick="fileInput.click()">
+                    <p><i class="fas fa-cloud-upload-alt fa-3x"></i></p>
+                    <p>Click to upload photo or video</p>
+                    <button type="button" class="upload-btn">Choose File</button>
+                </div>
+
+                <!-- ✅ IMPORTANT: name="media" -->
+                <input type="file" id="fileInput" name="media" accept="image/*,video/*" hidden>
+
+                <p id="fileName">No file selected</p>
+            </div>
+
+            <!-- PREVIEW + RESULT -->
+            <div class="card">
+                <h2>Preview & Caption</h2>
+
+                <div class="preview">
+                    <img id="imgPreview" style="max-width:100%; max-height:100%; display:none;">
+                    <video id="videoPreview" controls style="max-width:100%; max-height:100%; display:none;"></video>
+                    <span id="placeholder">Preview will appear here</span>
+                </div>
+
+                <!-- ✅ DJANGO OUTPUT -->
+                <textarea readonly>
+{% if caption %}{{ caption }}{% endif %}
+                </textarea>
+
+                <p style="margin-top:10px;">
+{% if hashtags %}{{ hashtags }}{% endif %}
+                </p>
+
+                <!-- ✅ SUBMIT BUTTON -->
+                <button type="submit" class="generate">Generate Caption</button>
+            </div>
+
+        </div>
+    </form>
+    <!-- ✅ DJANGO FORM END -->
+
+</div>
+
+<script>
+const fileInput = document.getElementById("fileInput");
+const img = document.getElementById("imgPreview");
+const video = document.getElementById("videoPreview");
+const placeholder = document.getElementById("placeholder");
+const fileName = document.getElementById("fileName");
+
+fileInput.addEventListener("change", () => {
+    const file = fileInput.files[0];
+    if (!file) return;
+
+    fileName.innerText = file.name;
+    placeholder.style.display = "none";
+
+    if (file.type.startsWith("image")) {
+        img.src = URL.createObjectURL(file);
+        img.style.display = "block";
+        video.style.display = "none";
+    } else {
+        video.src = URL.createObjectURL(file);
+        video.style.display = "block";
+        img.style.display = "none";
+    }
+});
+</script>
+
+</body>
+</html>

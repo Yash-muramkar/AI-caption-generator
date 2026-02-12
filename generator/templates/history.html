@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Caption History</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #0f172a;
+            color: #e5e7eb;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            background: #020617;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #38bdf8;
+        }
+
+        .caption-card {
+            background: #020617;
+            border: 1px solid #334155;
+            padding: 18px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .caption-text {
+            white-space: pre-line;
+            line-height: 1.7;
+            margin-bottom: 12px;
+            color: #e5e7eb;          /* 🔥 LIGHT TEXT */
+            font-size: 15px;
+        }
+
+
+        .caption-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            color: #cbd5f5;
+        }
+
+        button {
+            background: #38bdf8;
+            border: none;
+            color: #4e5b93;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #0ea5e9;
+        }
+
+        .back {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back a {
+            color: #38bdf8;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>📄 Caption History</h1>
+
+    {% for item in captions %}
+    <div class="caption-card">
+        <div class="caption-text" id="cap{{ forloop.counter }}">
+            {{ item.caption }}
+        </div>
+
+        <div class="caption-footer">
+            <span>{{ item.created_at|date:"d M Y, h:i A" }}</span>
+            <button onclick="copyText('cap{{ forloop.counter }}')">
+                Copy
+            </button>
+        </div>
+    </div>
+    {% empty %}
+    <p style="text-align:center;">No captions yet.</p>
+    {% endfor %}
+
+    <div class="back">
+        <a href="/">⬅ Back to Generator</a>
+    </div>
+</div>
+
+<script>
+function copyText(id) {
+    const text = document.getElementById(id).innerText;
+    navigator.clipboard.writeText(text);
+    alert("Caption copied!");
+}
+</script>
+
+</body>
+</html>
