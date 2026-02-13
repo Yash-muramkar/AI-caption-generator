@@ -3,7 +3,8 @@ from django.conf import settings
 import os
 
 
-def blip_caption(raw_caption, ocr_text=""):
+def generate_instagram_caption(raw_caption, ocr_text=""):
+
 
     try:
 
