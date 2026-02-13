@@ -31,7 +31,8 @@
     </header>
 
     <!-- ✅ DJANGO FORM START -->
-    <form method="POST" enctype="multipart/form-data">
+    <form id="uploadForm" enctype="multipart/form-data">
+
         {% csrf_token %}
 
         <div class="main">
@@ -63,16 +64,25 @@
                 </div>
 
                 <!-- ✅ DJANGO OUTPUT -->
-                <textarea readonly>
+                <textarea id="captionBox" readonly></textarea>
+
 {% if caption %}{{ caption }}{% endif %}
+<div id="loader" style="display:none; color:#2575fc; font-weight:bold;">
+Generating caption... please wait ⏳
+</div>
+
                 </textarea>
 
-                <p style="margin-top:10px;">
+                <p id="hashtagBox" style="margin-top:10px;"></p>
+
 {% if hashtags %}{{ hashtags }}{% endif %}
                 </p>
 
                 <!-- ✅ SUBMIT BUTTON -->
-                <button type="submit" class="generate">Generate Caption</button>
+               <button type="button" id="generateBtn" class="generate">
+Generate Smart Caption
+</button>
+
             </div>
 
         </div>
@@ -82,30 +92,98 @@
 </div>
 
 <script>
-const fileInput = document.getElementById("fileInput");
-const img = document.getElementById("imgPreview");
-const video = document.getElementById("videoPreview");
-const placeholder = document.getElementById("placeholder");
-const fileName = document.getElementById("fileName");
 
-fileInput.addEventListener("change", () => {
-    const file = fileInput.files[0];
-    if (!file) return;
+document.addEventListener("DOMContentLoaded", function(){
 
-    fileName.innerText = file.name;
-    placeholder.style.display = "none";
+    const fileInput = document.getElementById("fileInput");
+    const img = document.getElementById("imgPreview");
+    const video = document.getElementById("videoPreview");
+    const placeholder = document.getElementById("placeholder");
+    const fileName = document.getElementById("fileName");
+    const generateBtn = document.getElementById("generateBtn");
 
-    if (file.type.startsWith("image")) {
-        img.src = URL.createObjectURL(file);
-        img.style.display = "block";
-        video.style.display = "none";
-    } else {
-        video.src = URL.createObjectURL(file);
-        video.style.display = "block";
-        img.style.display = "none";
-    }
+    const captionBox = document.querySelector("textarea");
+    const hashtagBox = document.querySelector("p");
+
+
+
+    // ================= PREVIEW =================
+
+    fileInput.addEventListener("change", function(){
+
+        const file = this.files[0];
+        if(!file) return;
+
+        fileName.innerText = file.name;
+        placeholder.style.display = "none";
+
+        const url = URL.createObjectURL(file);
+
+        if(file.type.startsWith("image")){
+            img.src = url;
+            img.style.display = "block";
+            video.style.display = "none";
+        }
+        else{
+            video.src = url;
+            video.style.display = "block";
+            img.style.display = "none";
+        }
+    });
+
+
+
+    // ================= GENERATE =================
+
+    generateBtn.addEventListener("click", async function(){
+
+        const file = fileInput.files[0];
+
+        if(!file){
+            alert("Pehle image upload kar bhai 🙂");
+            return;
+        }
+
+        // 🔥 BUTTON LOCK
+        generateBtn.disabled = true;
+        generateBtn.innerText = "Generating...";
+
+
+        const formData = new FormData();
+        formData.append("media", file);
+
+        try{
+
+            const response = await fetch("/generate-caption/",{
+                method:"POST",
+                body:formData,
+                headers:{
+                    "X-CSRFToken":"{{ csrf_token }}"
+                }
+            });
+
+            const data = await response.json();
+
+            captionBox.value = data.caption;
+            hashtagBox.innerText = data.hashtags;
+
+        }
+        catch(err){
+            console.log(err);
+            alert("Error generating caption");
+        }
+
+        // 🔥 BUTTON UNLOCK
+        generateBtn.disabled = false;
+        generateBtn.innerText = "Generate Caption";
+
+    });
+
 });
+
 </script>
+
+
 
 </body>
 </html>

@@ -1,7 +1,8 @@
 from django.urls import path
-from .views import upload, caption_history
+from . import views
 
 urlpatterns = [
-    path("", upload, name="upload"),
-    path("history/", caption_history, name="caption_history"),
+    path("", views.upload, name="upload"),
+    path("history/", views.caption_history, name="caption_history"),
+    path("generate-caption/", views.generate_caption, name="generate_caption"),
 ]

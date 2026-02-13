@@ -1,15 +1,15 @@
-from dotenv import load_dotenv
 import os
 from pathlib import Path
+from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-load_dotenv()  # Load environment variables from .env file
+load_dotenv(os.path.join(BASE_DIR, ".env"), override=True)
 
-GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
 print("DJANGO GROQ KEY:", GROQ_API_KEY)
- 
+
 # SECURITY
 SECRET_KEY = "django-insecure-change-this-later"
 
