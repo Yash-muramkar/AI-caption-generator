@@ -10,6 +10,8 @@ GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
 print("DJANGO GROQ KEY:", GROQ_API_KEY)
 
+OLLAMA_URL = "http://localhost:11434"
+
 # SECURITY
 SECRET_KEY = "django-insecure-change-this-later"
 
